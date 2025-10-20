@@ -1,0 +1,4 @@
+export default {
+  COMMAND_PREFIX: '.',
+  COMMIT_CHANNEL_ID: '1392449172895957013',
+};

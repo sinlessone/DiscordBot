@@ -6,7 +6,7 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message) {
-    const embed = client.embed().setDescription('Pong!');
+    const embed = client.embed().setDescription('**Pong!**');
 
     await message.reply({
       embeds: [embed],
