@@ -1,7 +1,7 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { successEmbed } from '../../utils/embeds.js';
 
-/** Thank you oblongboot for this superb logic. */
+/** Thank you oblongboot and WaterPhoenix196 for their contributions. */
 export default {
   name: 'lock',
 
@@ -18,35 +18,14 @@ export default {
 
     const channel = message.channel;
 
-    try {
-      const currentOverwrites = channel.permissionOverwrites.cache;
-      let isLocked = true;
+    try {     
+      const isLocked = channel.permissionOverwrites.cache
+        .get(everyoneRole.id)
+        ?.deny.has(PermissionFlagsBits.SendMessages);
 
-      for (const overwrite of currentOverwrites.values()) {
-        if (
-          overwrite.type === 'role' &&
-          overwrite.deny.has(PermissionFlagsBits.SendMessages)
-        ) {
-          isLocked = true;
-          break;
-        } else {
-          isLocked = false;
-        }
-      }
-
-      for (const [id, role] of message.guild.roles.cache) {
-        if (role.permissions.has(PermissionFlagsBits.Administrator)) continue;
-
-        if (isLocked) {
-          await channel.permissionOverwrites.edit(role, {
-            SendMessages: null
-          });
-        } else {
-          await channel.permissionOverwrites.edit(role, {
-            SendMessages: false
-          });
-        }
-      }
+      await channel.permissionOverwrites.edit(everyoneRole, {
+        SendMessages: isLocked ? null : false,
+      });
 
       await channel.send({
         embeds: [successEmbed(`**Channel ${isLocked ? 'unlocked' : 'locked'}!**`)],

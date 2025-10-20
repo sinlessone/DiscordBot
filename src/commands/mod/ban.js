@@ -17,13 +17,17 @@ export default {
     }
 
     if (!user) {
-      return;
+      return await message.reply({
+        embeds: [errorEmbed("Please provide a user.")],
+      });
     }
 
     const member = await searchMember(message.guild, user);
 
     if (!member) {
-      return;
+      return await message.reply({
+        embeds: [errorEmbed("User not found.")],
+      });
     }
 
     await member.ban({ reason: `Banned by ${message.author.tag}` });
