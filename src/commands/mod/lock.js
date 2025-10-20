@@ -1,5 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js';
-import { successEmbed } from '../../utils/embeds.js';
+import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 
 /** Thank you oblongboot and WaterPhoenix196 for their contributions. */
 export default {
