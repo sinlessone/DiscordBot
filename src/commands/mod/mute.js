@@ -17,7 +17,9 @@ export default {
     }
 
     if (!user || !duration) {
-      return;
+      return await message.reply({
+        embeds: [errorEmbed("Please provide a user and duration.")],
+      });
     }
 
     const member = await searchMember(message.guild, user);
