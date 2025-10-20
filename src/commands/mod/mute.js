@@ -1,6 +1,6 @@
-import { PermissionFlagsBits } from "discord.js";
-import { parseDuration, searchMember } from "../../utils/search.js";
-import { successEmbed } from "../../utils/embeds.js";
+import { PermissionFlagsBits } from 'discord.js';
+import { parseDuration, searchMember } from '../../utils/search.js';
+import { successEmbed } from '../../utils/embeds.js';
 
 export default {
   name: 'mute',
@@ -10,7 +10,9 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message, user, duration) {
-    if (!message.member.permissions.has(PermissionFlagsBits.MuteMembers)) {
+    if (
+      !message.member.permissions.has(PermissionFlagsBits.MuteMembers)
+    ) {
       return;
     }
 
@@ -25,10 +27,15 @@ export default {
       return;
     }
 
-    await member.timeout(muteDuration, `Muted by ${message.author.tag} for ${duration}`);
+    await member.timeout(
+      muteDuration,
+      `Muted by ${message.author.tag} for ${duration}`,
+    );
 
     await message.channel.send({
-      embeds: [successEmbed(`**${member.user.tag} has been muted.**`)],
+      embeds: [
+        successEmbed(`**${member.user.tag} has been muted.**`),
+      ],
     });
   },
 };
