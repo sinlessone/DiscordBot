@@ -1,4 +1,5 @@
 import { errorEmbed } from '../utils/embeds.js';
+import { logger } from '../utils/logger.js';
 
 export default {
   name: 'messageCreate',
@@ -24,9 +25,9 @@ export default {
     }
 
     try {
-      await command.execute(client, message, args);
+      await command.execute(client, message, ...args);
     } catch (error) {
-      client.logger.error(
+      logger.error(
         `Error executing command ${commandName}: ${error.message}`,
       );
 
