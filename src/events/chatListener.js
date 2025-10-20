@@ -1,3 +1,5 @@
+import { PermissionFlagsBits } from "discord.js";
+
 export default {
   name: 'messageCreate',
 
@@ -18,7 +20,7 @@ export default {
       return;
     }
 
-    if (content.includes('dev reset')) {
+    if (message.member.permissions.has(PermissionFlagsBits.Administrator) && content.includes('dev reset')) {
       client.chatBot.reset();
 
       return await message.reply({
