@@ -19,6 +19,7 @@ export default {
     const channel = message.channel;
 
     try {     
+      const everyoneRole = message.guild.roles.everyone;
       const isLocked = channel.permissionOverwrites.cache
         .get(everyoneRole.id)
         ?.deny.has(PermissionFlagsBits.SendMessages);
@@ -31,6 +32,8 @@ export default {
         embeds: [successEmbed(`**Channel ${isLocked ? 'unlocked' : 'locked'}!**`)],
       });
     } catch (err) {
+      console.log(err);
+
       await message.reply({
         embeds: [errorEmbed("Something went wrong while toggling the lock.")],
       });
