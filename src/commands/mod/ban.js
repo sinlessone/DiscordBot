@@ -1,6 +1,6 @@
-import { PermissionFlagsBits } from "discord.js";
-import { successEmbed } from "../../utils/embeds.js";
-import { searchMember } from "../../utils/search.js";
+import { PermissionFlagsBits } from 'discord.js';
+import { successEmbed } from '../../utils/embeds.js';
+import { searchMember } from '../../utils/search.js';
 
 export default {
   name: 'ban',
@@ -10,10 +10,12 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message, user) {
-    if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+    if (
+      !message.member.permissions.has(PermissionFlagsBits.BanMembers)
+    ) {
       return;
     }
-    
+
     if (!user) {
       return;
     }
@@ -27,7 +29,9 @@ export default {
     await member.ban({ reason: `Banned by ${message.author.tag}` });
 
     await message.channel.send({
-      embeds: [successEmbed(`**${member.user.tag} has been banned.**`)],
+      embeds: [
+        successEmbed(`**${member.user.tag} has been banned.**`),
+      ],
     });
   },
 };

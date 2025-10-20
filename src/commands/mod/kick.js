@@ -1,6 +1,6 @@
-import { PermissionFlagsBits } from "discord.js";
-import { successEmbed } from "../../utils/embeds.js";
-import { searchMember } from "../../utils/search.js";
+import { PermissionFlagsBits } from 'discord.js';
+import { successEmbed } from '../../utils/embeds.js';
+import { searchMember } from '../../utils/search.js';
 
 export default {
   name: 'kick',
@@ -10,10 +10,12 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message, user) {
-    if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+    if (
+      !message.member.permissions.has(PermissionFlagsBits.KickMembers)
+    ) {
       return;
     }
-    
+
     if (!user) {
       return;
     }
@@ -27,7 +29,9 @@ export default {
     await member.kick(`Kicked by ${message.author.tag}`);
 
     await message.channel.send({
-      embeds: [successEmbed(`**${member.user.tag} has been kicked.**`)],
+      embeds: [
+        successEmbed(`**${member.user.tag} has been kicked.**`),
+      ],
     });
   },
 };

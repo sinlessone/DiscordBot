@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { startSmeeClient } from '../utils/smee.js';
 
 export default {
   name: 'clientReady',
@@ -34,5 +35,7 @@ export default {
         },
       ],
     });
+
+    startSmeeClient(client);
   },
 };

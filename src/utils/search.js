@@ -29,7 +29,7 @@ export const searchMember = async (guild, query) => {
   }
 
   return null;
-}
+};
 
 /**
  * Parse a duration string (e.g., "10m", "2h") into milliseconds.
@@ -56,4 +56,4 @@ export const parseDuration = (duration) => {
     default:
       return 1000 * 60; // Default to 1 minute
   }
-}
+};
