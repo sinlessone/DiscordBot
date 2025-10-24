@@ -67,4 +67,4 @@ async function awaitDMReply(client, userResolvable, promptOptions, timeoutMs = 6
     }
 }
 
-export { sendDM, sendDMWithFallback, awaitDMReply };
+export { sendDM, sendDMWithFallback, awaitDMReply, fetchUser };
