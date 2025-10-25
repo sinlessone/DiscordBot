@@ -1,8 +1,8 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 import { sendDM } from '../../utils/dmUtils.js';
-import { searchMember } from '../../utils/search.js';
 
+/** Thank you oblongboot for this command */
 export default {
   name: 'admin',
   description: 'Administrator commands for server management',
