@@ -1,5 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js';
-import { successEmbed } from '../../utils/embeds.js';
+import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 import { searchMember } from '../../utils/search.js';
 
 export default {
@@ -27,6 +27,12 @@ export default {
     if (!member) {
       return await message.reply({
         embeds: [errorEmbed("User not found.")],
+      });
+    }
+
+    if (member.permissions.has(PermissionFlagsBits.BanMembers)) {
+      return await message.reply({
+        embeds: [errorEmbed("You cannot ban a mod/admin.")],
       });
     }
 

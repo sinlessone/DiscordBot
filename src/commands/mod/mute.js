@@ -1,6 +1,6 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { parseDuration, searchMember } from '../../utils/search.js';
-import { successEmbed } from '../../utils/embeds.js';
+import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 
 export default {
   name: 'mute',
@@ -27,6 +27,12 @@ export default {
 
     if (!member) {
       return;
+    }
+
+    if (member.permissions.has(PermissionFlagsBits.BanMembers)) {
+      return await message.reply({
+        embeds: [errorEmbed("You cannot mute a mod/admin.")],
+      });
     }
 
     await member.timeout(
