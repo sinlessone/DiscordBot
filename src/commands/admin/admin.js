@@ -293,7 +293,7 @@ async function handleStickyMessage(client, message, args) {
   if (!client.stickyListenerRegistered) {
     client.stickyListenerRegistered = true;
     client.on('messageCreate', async (msg) => {
-      if (!msg.guild || msg.author.bot) return;
+      if (!msg.guild) return;
       const sticky = client.stickyMessages.get(msg.channel.id);
       if (!sticky) return;
       const key = msg.channel.id;
