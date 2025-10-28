@@ -8,14 +8,43 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message) {
-    // Bad solution to filter channel.
+    if (
+      (message.content.toLowerCase().includes('@everyone') ||
+      message.content.toLowerCase().includes('@here')) &&
+      !message.member.permissions.has(PermissionFlagsBits.MentionEveryone)
+    ) {
+      const scamKeywords = [
+        "steamcommunity",
+        "gift",
+        "discordapp",
+        "nitro",
+        "free", // maybe flalse flag too, unsure ig
+        "giveaway",
+        "1.png",
+        "2.png",
+        "3.png",
+        "4.png",
+        "1.jpg",
+        "2.jpg",
+        "3.jpg",
+        "4.jpg",
+        "image.png" // this one MIGHT false flag but scams use it + who tf does @everyone for normal images without perms
+      ];
+      console.log(message.content.toLowerCase());
+      if (scamKeywords.some(word => message.content.toLowerCase().includes(word))) {
+        await message.delete();
+        await message.channel.send(
+          `${message.author}, your message was removed because it mentioned everyone/here mentions and contained possible scam-related content. Please refrain from such messages.`
+        );
+      }
+    }
     if (!message.channel.name.includes('ai-chat')) return;
     if (message.author.bot || !message.mentions.has(client.user)) {
       return;
     }
 
     const content = message.content.trim().toLowerCase();
-
+  
     if (content === `<@!${client.user.id}>`) {
       return;
     }
