@@ -73,7 +73,7 @@ export default {
     for (const msg of msgs) {
       if (msg == msgs[0]) {
         await message.reply({
-          content: msg.trim(),
+          content: msg,
           allowedMentions: { repliedUser: false },
         });
 
