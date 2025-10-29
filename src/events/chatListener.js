@@ -71,16 +71,23 @@ export default {
     const msgs = res.split('|||');
 
     for (const msg of msgs) {
-      if (msg == msgs[0]) {
+      if (msg === msgs[0]) {
         await message.reply({
           content: msg,
-          allowedMentions: { repliedUser: false },
+          allowedMentions: {
+            parse: [],
+            repliedUser: false, 
+          },
         });
-
         continue;
       }
-
-      await message.channel.send(msg.trim());
+    
+      await message.channel.send({
+        content: msg.trim(),
+        allowedMentions: {
+          parse: [],
+        },
+      });
     }
   },
 };
