@@ -32,7 +32,7 @@ export default {
         "image.png" // this one MIGHT false flag but scams use it + who tf does @everyone for normal images without perms
       ];
       console.log(message.content.toLowerCase());
-      if (homoglyphSearch.search(message.content.toLowerCase(), scamKeywords)) {
+      if (homoglyphSearch.search(message.content.toLowerCase(), scamKeywords).length !== 0) {
         await message.delete();
         await message.channel.send(
           `${message.author}, your message was removed because it mentioned everyone/here mentions and contained possible scam-related content. Please refrain from such messages.`
