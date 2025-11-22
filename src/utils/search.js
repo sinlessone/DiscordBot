@@ -9,22 +9,72 @@ export const searchMember = async (guild, query) => {
   const mentionRegex = /^<@!?(\d+)>$/;
   const mentionMatch = query.match(mentionRegex);
   const userIdFromMention = mentionMatch ? mentionMatch[1] : null;
+
+  if (userIdFromMention || /^\d+$/.test(query)) {
+    try {
+      const id = userIdFromMention || query;
+      return await guild.members.fetch(id);
+    } catch (err) {
+    }
+  }
+
   const members = await guild.members.fetch();
   const normalizedQuery = query.toLowerCase();
-
-  for (const member of members.values()) {
+  const exactMatch = members.find((member) => {
     const displayName = member.displayName.toLowerCase();
     const username = member.user.username.toLowerCase();
-    const userId = member.user.id;
+    const globalName = member.user.globalName?.toLowerCase();
 
-    const isMatch =
+    return (
+      displayName === normalizedQuery ||
+      username === normalizedQuery ||
+      globalName === normalizedQuery
+    );
+  });
+
+  if (exactMatch) return exactMatch;
+
+  const partialMatch = members.find((member) => {
+    const displayName = member.displayName.toLowerCase();
+    const username = member.user.username.toLowerCase();
+    const globalName = member.user.globalName?.toLowerCase();
+
+    return (
       displayName.includes(normalizedQuery) ||
       username.includes(normalizedQuery) ||
-      userId === query ||
-      userId === userIdFromMention;
+      (globalName && globalName.includes(normalizedQuery))
+    );
+  });
+
+  return partialMatch || null;
+};
+
+/**
+ * Search for a role in a guild by name, ID, or mention.
+ * Returns the first match or null.
+ * @param {Guild} guild - The Discord guild (server) object.
+ * @param {string} query - The search query string.
+ * @returns {Promise<Role>} - The first matching role or null.
+ */
+export const searchRole = async (guild, query) => {
+  const mentionRegex = /^<@&(\d+)>$/;
+  const mentionMatch = query.match(mentionRegex);
+  const roleIdFromMention = mentionMatch ? mentionMatch[1] : null;
+  const roles = await guild.roles.fetch();
+  const normalizedQuery = query.toLowerCase();
+
+  for (const role of roles.values()) {
+    const name = role.name.toLowerCase();
+    const roleId = role.id;
+
+    const isMatch =
+      name === normalizedQuery ||
+      name.includes(normalizedQuery) ||
+      roleId === query ||
+      roleId === roleIdFromMention;
 
     if (isMatch) {
-      return member;
+      return role;
     }
   }
 
