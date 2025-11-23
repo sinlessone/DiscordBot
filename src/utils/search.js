@@ -8,45 +8,37 @@
 export const searchMember = async (guild, query) => {
   const mentionRegex = /^<@!?(\d+)>$/;
   const mentionMatch = query.match(mentionRegex);
-  const userIdFromMention = mentionMatch ? mentionMatch[1] : null;
+  const id = mentionMatch ? mentionMatch[1] : null;
 
-  if (userIdFromMention || /^\d+$/.test(query)) {
+  if (id || /^\d+$/.test(query)) {
+    const userId = id || query;
+    const cached = guild.members.cache.get(userId);
+    if (cached) return cached;
     try {
-      const id = userIdFromMention || query;
-      return await guild.members.fetch(id);
-    } catch (err) {
+      return await guild.members.fetch(userId);
+    } catch {
+      return null;
     }
   }
 
-  const members = await guild.members.fetch();
-  const normalizedQuery = query.toLowerCase();
-  const exactMatch = members.find((member) => {
-    const displayName = member.displayName.toLowerCase();
-    const username = member.user.username.toLowerCase();
-    const globalName = member.user.globalName?.toLowerCase();
+  const normalized = query.toLowerCase();
 
-    return (
-      displayName === normalizedQuery ||
-      username === normalizedQuery ||
-      globalName === normalizedQuery
-    );
+  const exact = guild.members.cache.find(member => {
+    const display = member.displayName.toLowerCase();
+    const user = member.user.username.toLowerCase();
+    const global = member.user.globalName?.toLowerCase();
+    return display === normalized || user === normalized || global === normalized;
+  });
+  if (exact) return exact;
+
+  const partial = guild.members.cache.find(member => {
+    const display = member.displayName.toLowerCase();
+    const user = member.user.username.toLowerCase();
+    const global = member.user.globalName?.toLowerCase();
+    return display.includes(normalized) || user.includes(normalized) || (global && global.includes(normalized));
   });
 
-  if (exactMatch) return exactMatch;
-
-  const partialMatch = members.find((member) => {
-    const displayName = member.displayName.toLowerCase();
-    const username = member.user.username.toLowerCase();
-    const globalName = member.user.globalName?.toLowerCase();
-
-    return (
-      displayName.includes(normalizedQuery) ||
-      username.includes(normalizedQuery) ||
-      (globalName && globalName.includes(normalizedQuery))
-    );
-  });
-
-  return partialMatch || null;
+  return partial || null;
 };
 
 /**
@@ -60,20 +52,18 @@ export const searchRole = async (guild, query) => {
   const mentionRegex = /^<@&(\d+)>$/;
   const mentionMatch = query.match(mentionRegex);
   const roleIdFromMention = mentionMatch ? mentionMatch[1] : null;
-  const roles = await guild.roles.fetch();
-  const normalizedQuery = query.toLowerCase();
+  const normalized = query.toLowerCase();
+
+  const roles = guild.roles.cache.size ? guild.roles.cache : await guild.roles.fetch();
 
   for (const role of roles.values()) {
     const name = role.name.toLowerCase();
-    const roleId = role.id;
-
-    const isMatch =
-      name === normalizedQuery ||
-      name.includes(normalizedQuery) ||
-      roleId === query ||
-      roleId === roleIdFromMention;
-
-    if (isMatch) {
+    if (
+      name === normalized ||
+      name.includes(normalized) ||
+      role.id === query ||
+      role.id === roleIdFromMention
+    ) {
       return role;
     }
   }
