@@ -18,7 +18,7 @@ export default {
 
     if (!user || !duration) {
       return await message.reply({
-        embeds: [errorEmbed("Please provide a user and duration.")],
+        embeds: [errorEmbed('Please provide a user and duration.')],
       });
     }
 
@@ -31,7 +31,7 @@ export default {
 
     if (member.permissions.has(PermissionFlagsBits.BanMembers)) {
       return await message.reply({
-        embeds: [errorEmbed("You cannot mute a mod/admin.")],
+        embeds: [errorEmbed('You cannot mute a mod/admin.')],
       });
     }
 

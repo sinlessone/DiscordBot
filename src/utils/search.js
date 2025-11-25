@@ -23,19 +23,27 @@ export const searchMember = async (guild, query) => {
 
   const normalized = query.toLowerCase();
 
-  const exact = guild.members.cache.find(member => {
+  const exact = guild.members.cache.find((member) => {
     const display = member.displayName.toLowerCase();
     const user = member.user.username.toLowerCase();
     const global = member.user.globalName?.toLowerCase();
-    return display === normalized || user === normalized || global === normalized;
+    return (
+      display === normalized ||
+      user === normalized ||
+      global === normalized
+    );
   });
   if (exact) return exact;
 
-  const partial = guild.members.cache.find(member => {
+  const partial = guild.members.cache.find((member) => {
     const display = member.displayName.toLowerCase();
     const user = member.user.username.toLowerCase();
     const global = member.user.globalName?.toLowerCase();
-    return display.includes(normalized) || user.includes(normalized) || (global && global.includes(normalized));
+    return (
+      display.includes(normalized) ||
+      user.includes(normalized) ||
+      (global && global.includes(normalized))
+    );
   });
 
   return partial || null;
@@ -54,7 +62,9 @@ export const searchRole = async (guild, query) => {
   const roleIdFromMention = mentionMatch ? mentionMatch[1] : null;
   const normalized = query.toLowerCase();
 
-  const roles = guild.roles.cache.size ? guild.roles.cache : await guild.roles.fetch();
+  const roles = guild.roles.cache.size
+    ? guild.roles.cache
+    : await guild.roles.fetch();
 
   for (const role of roles.values()) {
     const name = role.name.toLowerCase();

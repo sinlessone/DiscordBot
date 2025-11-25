@@ -1,5 +1,5 @@
-import { PermissionFlagsBits, MessageFlags } from "discord.js";
-import homoglyphSearch from "homoglyph-search";
+import { PermissionFlagsBits, MessageFlags } from 'discord.js';
+import homoglyphSearch from 'homoglyph-search';
 
 export default {
   name: 'messageCreate',
@@ -12,38 +12,46 @@ export default {
     if (
       (message.content.toLowerCase().includes('@everyone') ||
         message.content.toLowerCase().includes('@here')) &&
-      !message.member.permissions.has(PermissionFlagsBits.MentionEveryone)
+      !message.member.permissions.has(
+        PermissionFlagsBits.MentionEveryone,
+      )
     ) {
       const scamKeywords = [
-        "steamcommunity",
-        "gift",
-        "discordapp",
-        "nitro",
-        "free", // maybe flalse flag too, unsure ig
-        "giveaway",
-        "1.png",
-        "2.png",
-        "3.png",
-        "4.png",
-        "1.jpg",
-        "2.jpg",
-        "3.jpg",
-        "4.jpg",
-        "image.png" // this one MIGHT false flag but scams use it + who tf does @everyone for normal images without perms
+        'steamcommunity',
+        'gift',
+        'discordapp',
+        'nitro',
+        'free', // maybe false flag too, unsure ig
+        'giveaway',
+        '1.png',
+        '2.png',
+        '3.png',
+        '4.png',
+        '1.jpg',
+        '2.jpg',
+        '3.jpg',
+        '4.jpg',
+        'image.png', // this one MIGHT false flag but scams use it + who tf does @everyone for normal images without perms
       ];
-      
-      if (homoglyphSearch.search(message.content.toLowerCase(), scamKeywords).length !== 0) {
+
+      if (
+        homoglyphSearch.search(
+          message.content.toLowerCase(),
+          scamKeywords,
+        ).length !== 0
+      ) {
         const reply = await message.channel.send({
-          content: `<@${message.author.id}> Your message was removed because it contained everyone/here mentions and potentially scam-related content. Please avoid sending such messages in the future.`
+          content: `<@${message.author.id}> Your message was removed because it contained everyone/here mentions and potentially scam-related content. Please avoid sending such messages in the future.`,
         });
 
         setTimeout(() => {
           reply.delete();
         }, 10_000);
-        
+
         await message.delete();
       }
     }
+
     if (!message.channel.name.includes('ai-chat')) return;
     if (message.author.bot || !message.mentions.has(client.user)) {
       return;
@@ -55,7 +63,12 @@ export default {
       return;
     }
 
-    if (message.member.permissions.has(PermissionFlagsBits.Administrator) && content.includes('dev reset')) {
+    if (
+      message.member.permissions.has(
+        PermissionFlagsBits.Administrator,
+      ) &&
+      content.includes('dev reset')
+    ) {
       client.chatBot.reset();
 
       return await message.reply({

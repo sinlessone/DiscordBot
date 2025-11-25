@@ -18,7 +18,7 @@ export default {
 
     if (!user) {
       return await message.reply({
-        embeds: [errorEmbed("Please provide a user.")],
+        embeds: [errorEmbed('Please provide a user.')],
       });
     }
 
@@ -26,13 +26,13 @@ export default {
 
     if (!member) {
       return await message.reply({
-        embeds: [errorEmbed("User not found.")],
+        embeds: [errorEmbed('User not found.')],
       });
     }
 
     if (member.permissions.has(PermissionFlagsBits.BanMembers)) {
       return await message.reply({
-        embeds: [errorEmbed("You cannot ban a mod/admin.")],
+        embeds: [errorEmbed('You cannot ban a mod/admin.')],
       });
     }
 

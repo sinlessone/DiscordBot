@@ -18,7 +18,7 @@ export default {
 
     if (!user) {
       return await message.reply({
-        embeds: [errorEmbed("Please provide a user.")],
+        embeds: [errorEmbed('Please provide a user.')],
       });
     }
 
@@ -26,7 +26,7 @@ export default {
 
     if (!member) {
       return await message.reply({
-        embeds: [errorEmbed("User not found.")],
+        embeds: [errorEmbed('User not found.')],
       });
     }
 

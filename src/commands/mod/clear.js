@@ -19,7 +19,11 @@ export default {
 
     if (!amount || isNaN(amount) || amount < 1 || amount > 100) {
       return await message.reply({
-        embeds: [errorEmbed("Please provide a valid number of messages to delete (1-100).")],
+        embeds: [
+          errorEmbed(
+            'Please provide a valid number of messages to delete (1-100).',
+          ),
+        ],
       });
     }
 
