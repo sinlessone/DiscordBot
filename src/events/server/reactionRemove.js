@@ -12,7 +12,7 @@ export default {
    * @param {import("discord.js").MessageReactionEventDetails} details
    */
   async execute(client, reaction, user, details) {
-    if (user.bot || reaction.emoji.name != '📦')
+    if (user.bot || reaction.message.id != constants.REACTION_ROLE_MESSAGE_ID || reaction.emoji.name != '📦')
         return;
 
     const guild = reaction.message.guild;
