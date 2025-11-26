@@ -10,6 +10,7 @@ import { loadFiles } from '../utils/loader.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { ChatBot } from '../utils/chatBot.js';
+import { QuickDB } from 'quick.db';
 
 export class Bot extends Client {
   constructor(geminiApiKey) {
@@ -32,6 +33,7 @@ export class Bot extends Client {
 
     this.prefix = '.';
     this.chatBot = new ChatBot(geminiApiKey);
+    this.db = new QuickDB({ filePath: 'database.sqlite' });
     this.commands = new Collection();
   }
 

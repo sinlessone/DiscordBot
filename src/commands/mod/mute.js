@@ -26,7 +26,9 @@ export default {
     const muteDuration = parseDuration(duration);
 
     if (!member) {
-      return;
+      return await message.reply({
+        embeds: [errorEmbed('User not found.')],
+      });
     }
 
     if (member.permissions.has(PermissionFlagsBits.BanMembers)) {
@@ -40,7 +42,7 @@ export default {
       `Muted by ${message.author.tag} for ${duration}`,
     );
 
-    await message.channel.send({
+    await message.reply({
       embeds: [
         successEmbed(`**${member.user.tag} has been muted.**`),
       ],

@@ -1,5 +1,4 @@
-import constants from '../../utils/constants.js';
-import { infoEmbed } from '../../utils/embeds.js';
+import { errorEmbed } from '../../utils/embeds.js';
 
 export default {
   name: 'guildMemberRemove',
@@ -9,12 +8,14 @@ export default {
    * @param {import("discord.js").GuildMember} member
    */
   async execute(client, member) {
-    const channel = client.channels.cache.find(
-      (val) => val.id == constants.MODLOGS_CHANNEL,
-    );
+    const guild =
+      (await client.db.get(`guild_${member.guild.id}`)) || {};
+    const channel = client.channels.cache.get(guild.modlogs_channel);
 
-    await channel.send({
-      embeds: [infoEmbed(`<@${member.id}> left the server.`)],
-    });
+    if (channel) {
+      await channel.send({
+        embeds: [errorEmbed(`<@${member.id}> left the server.`)],
+      });
+    }
   },
 };

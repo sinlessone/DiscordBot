@@ -30,7 +30,7 @@ export default {
         SendMessages: isLocked ? null : false,
       });
 
-      await channel.send({
+      await message.reply({
         embeds: [
           successEmbed(
             `**Channel ${isLocked ? 'unlocked' : 'locked'}!**`,

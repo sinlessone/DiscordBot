@@ -17,9 +17,7 @@ export default {
     }
 
     if (!user) {
-      return await message.reply({
-        embeds: [errorEmbed('Please provide a user.')],
-      });
+      return;
     }
 
     const member = await searchMember(message.guild, user);
@@ -31,14 +29,14 @@ export default {
     }
 
     if (member.communicationDisabledUntilTimestamp < Date.now()) {
-      return await message.channel.send({
+      return await message.reply({
         embeds: [errorEmbed(`**${member.user.tag} is not muted.**`)],
       });
     }
 
     await member.timeout(null);
 
-    await message.channel.send({
+    await message.reply({
       embeds: [
         successEmbed(`**${member.user.tag} has been unmuted.**`),
       ],

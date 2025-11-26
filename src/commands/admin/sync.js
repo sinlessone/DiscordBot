@@ -9,24 +9,26 @@ export default {
    * @param {import("../../client/bot.js").Bot} client
    * @param {import("discord.js").Message} message
    */
-  async execute(client, message) {
+  async execute(client, message, ...exceptions) {
     if (
       !message.member.permissions.has(
         PermissionFlagsBits.Administrator,
       )
-    )
+    ) {
       return;
+    }
 
+    const guild =
+      (await client.db.get(`guild_${member.guild.id}`)) || {};
+      
     const communityRole = message.guild.roles.cache.get(
-      constants.COMMUNITY_ROLE,
+      guild.autorole,
     );
-    const updateRole = message.guild.roles.cache.get(
-      constants.UPDATE_ROLE,
-    );
+
     const boosterRole = message.guild.roles.premiumSubscriberRole;
     const members = message.guild.members.cache;
 
-    const statusMessage = await message.channel.send({
+    const statusMessage = await message.reply({
       embeds: [
         infoEmbed(`Starting sync for ${members.size} members...`),
       ],
@@ -38,6 +40,7 @@ export default {
       const hoistedRoles = member.roles.cache.filter(
         (role) => role.hoist,
       );
+
       let highestRole =
         hoistedRoles.size > 0
           ? hoistedRoles.reduce((highest, role) =>
@@ -45,7 +48,7 @@ export default {
             )
           : null;
 
-      const rolesToKeep = new Set([updateRole?.id, boosterRole?.id]);
+      const rolesToKeep = new Set([...exceptions]);
       if (highestRole) rolesToKeep.add(highestRole.id);
 
       if (member.roles.cache.has(boosterRole?.id))

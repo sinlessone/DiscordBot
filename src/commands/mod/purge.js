@@ -45,7 +45,8 @@ export default {
       });
     } catch (error) {
       logger.error(`Error during purge command: ${error}`);
-      await originalChannel.send(
+
+      await message.reply(
         'An error occurred while trying to purge channel.',
       );
     }

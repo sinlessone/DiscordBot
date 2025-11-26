@@ -22,10 +22,12 @@
   "homepage": "https://github.com/CobaltScripts/discord-bot#readme",
   "dependencies": {
     "@google/genai": "^1.25.0",
+    "better-sqlite3": "^12.4.6",
     "discord.js": "^14.23.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "homoglyph-search": "^1.3.0"
+    "homoglyph-search": "^1.3.0",
+    "quick.db": "^9.1.7"
   },
   "devDependencies": {
     "prettier": "^3.6.2"

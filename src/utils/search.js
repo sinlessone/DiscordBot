@@ -1,9 +1,9 @@
 /**
  * Search for a member in a guild by display name, user ID, username, or mention.
  * Returns the first match or null.
- * @param {Guild} guild - The Discord guild (server) object.
+ * @param {import("discord.js").Guild} guild - The Discord guild (server) object.
  * @param {string} query - The search query string.
- * @returns {Promise<GuildMember>} - The first matching member or null.
+ * @returns {Promise<import("discord.js").GuildMember>} - The first matching member or null.
  */
 export const searchMember = async (guild, query) => {
   const mentionRegex = /^<@!?(\d+)>$/;
@@ -52,9 +52,9 @@ export const searchMember = async (guild, query) => {
 /**
  * Search for a role in a guild by name, ID, or mention.
  * Returns the first match or null.
- * @param {Guild} guild - The Discord guild (server) object.
+ * @param {import("discord.js").Guild} guild - The Discord guild (server) object.
  * @param {string} query - The search query string.
- * @returns {Promise<Role>} - The first matching role or null.
+ * @returns {Promise<import("discord.js").Role>} - The first matching role or null.
  */
 export const searchRole = async (guild, query) => {
   const mentionRegex = /^<@&(\d+)>$/;
@@ -75,6 +75,43 @@ export const searchRole = async (guild, query) => {
       role.id === roleIdFromMention
     ) {
       return role;
+    }
+  }
+
+  return null;
+};
+
+/**
+ * Search for a channel in a guild by name, ID, or mention.
+ * Returns the first match or null.
+ *
+ * @param {import("discord.js").Guild} guild - The Discord guild object.
+ * @param {string} query - The search query (name, ID, or mention).
+ * @returns {Promise<import("discord.js").GuildChannel | null>}
+ */
+export const searchChannel = async (guild, query) => {
+  if (!guild || !query) return null;
+
+  const mentionRegex = /^<#(\d+)>$/;
+  const mentionMatch = query.match(mentionRegex);
+  const channelIdFromMention = mentionMatch ? mentionMatch[1] : null;
+
+  const normalized = query.toLowerCase();
+
+  const channels = guild.channels.cache.size
+    ? guild.channels.cache
+    : await guild.channels.fetch();
+
+  for (const channel of channels.values()) {
+    const name = channel.name.toLowerCase();
+
+    if (
+      name === normalized ||
+      name.includes(normalized) ||
+      channel.id === query ||
+      channel.id === channelIdFromMention
+    ) {
+      return channel;
     }
   }
 

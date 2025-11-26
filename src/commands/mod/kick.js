@@ -17,9 +17,7 @@ export default {
     }
 
     if (!user) {
-      return await message.reply({
-        embeds: [errorEmbed('Please provide a user.')],
-      });
+      return;
     }
 
     const member = await searchMember(message.guild, user);
@@ -38,7 +36,7 @@ export default {
 
     await member.kick(`Kicked by ${message.author.tag}`);
 
-    await message.channel.send({
+    await message.reply({
       embeds: [
         successEmbed(`**${member.user.tag} has been kicked.**`),
       ],

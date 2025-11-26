@@ -9,35 +9,31 @@ export default {
     if (
       !message.member.permissions.has(PermissionFlagsBits.ManageRoles)
     ) {
-      return message.reply({
-        embeds: [errorEmbed('Insufficient permissions.')],
-      });
+      return;
     }
 
     if (!userArg) {
-      return message.reply({
-        embeds: [errorEmbed('You must provide a user.')],
-      });
+      return;
     }
 
     if (roleArgs.length === 0) {
-      return message.reply({
-        embeds: [errorEmbed('You must provide a role.')],
-      });
+      return;
     }
 
     const member = await searchMember(message.guild, userArg);
+
     if (!member) {
-      return message.reply({
+      return await message.reply({
         embeds: [errorEmbed('User not found.')],
       });
     }
 
     const roleName = roleArgs.join(' ');
     const role = await searchRole(message.guild, roleName);
+
     if (!role) {
-      return message.reply({
-        embeds: [errorEmbed(`Role "${roleName}" not found.`)],
+      return await message.reply({
+        embeds: [errorEmbed('Role not found.')],
       });
     }
 
@@ -57,6 +53,7 @@ export default {
     try {
       if (member.roles.cache.has(role.id)) {
         await member.roles.remove(role);
+
         return message.reply({
           embeds: [
             successEmbed(
@@ -66,6 +63,7 @@ export default {
         });
       } else {
         await member.roles.add(role);
+
         return message.reply({
           embeds: [
             successEmbed(

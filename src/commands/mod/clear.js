@@ -30,7 +30,7 @@ export default {
     await message.delete();
     await message.channel.bulkDelete(amount, true);
 
-    const msg = await message.channel.send({
+    const msg = await message.reply({
       embeds: [successEmbed(`**Deleted ${amount} messages.**`)],
     });
 
