@@ -19,7 +19,7 @@ export default {
     }
 
     const guild =
-      (await client.db.get(`guild_${member.guild.id}`)) || {};
+      (await client.db.get(`guild_${message.guild.id}`)) || {};
       
     const communityRole = message.guild.roles.cache.get(
       guild.autorole,
