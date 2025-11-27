@@ -9,7 +9,7 @@ export default {
    * @param {import("../../client/bot.js").Bot} client
    * @param {import("discord.js").Message} message
    */
-  async execute(client, message, ...exceptions) {
+  async execute(client, message) {
     if (
       !message.member.permissions.has(
         PermissionFlagsBits.Administrator,
@@ -48,7 +48,7 @@ export default {
             )
           : null;
 
-      const rolesToKeep = new Set([...exceptions]);
+      const rolesToKeep = new Set([boosterRole?.id]);
       if (highestRole) rolesToKeep.add(highestRole.id);
 
       if (member.roles.cache.has(boosterRole?.id))
