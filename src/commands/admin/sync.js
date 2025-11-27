@@ -34,8 +34,6 @@ export default {
       ],
     });
 
-    let processed = 0;
-
     for (const member of members.values()) {
       const hoistedRoles = member.roles.cache.filter(
         (role) => role.hoist,
@@ -52,10 +50,10 @@ export default {
       if (highestRole) rolesToKeep.add(highestRole.id);
 
       if (member.roles.cache.has(boosterRole?.id))
-        rolesToKeep.add(communityRole.id);
+        rolesToKeep.add(communityRole?.id);
 
       const onlyUpdate =
-        member.roles.cache.size === 0;
+        member.roles.cache.size === 1;
         
       if (onlyUpdate) rolesToKeep.add(communityRole.id);
 
@@ -72,17 +70,6 @@ export default {
           : null);
       if (roleToAdd && !member.roles.cache.has(roleToAdd.id)) {
         await member.roles.add(roleToAdd);
-      }
-
-      processed++;
-      if (processed % 10 === 0 || processed === members.size) {
-        await statusMessage.edit({
-          embeds: [
-            infoEmbed(
-              `Processed ${processed} / ${members.size} members...`,
-            ),
-          ],
-        });
       }
     }
 
