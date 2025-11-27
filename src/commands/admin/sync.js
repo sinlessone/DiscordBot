@@ -55,8 +55,8 @@ export default {
         rolesToKeep.add(communityRole.id);
 
       const onlyUpdate =
-        member.roles.cache.size === 1 &&
-        member.roles.cache.has(updateRole?.id);
+        member.roles.cache.size === 0;
+        
       if (onlyUpdate) rolesToKeep.add(communityRole.id);
 
       const rolesToRemove = member.roles.cache.filter(
