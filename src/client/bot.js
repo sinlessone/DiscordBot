@@ -6,7 +6,7 @@ import {
   Partials,
 } from 'discord.js';
 import { logger } from '../utils/logger.js';
-import { loadFiles } from '../utils/loader.js';
+import { loadFiles, loadSlashCommands } from '../utils/loader.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { ChatBot } from '../utils/chatBot.js';
@@ -46,19 +46,15 @@ export class Bot extends Client {
 
     for (const filePath of commandFiles) {
       const command = await import(`file://${filePath}`);
-
-      if (
-        !command.default ||
-        !command.default.name ||
-        !command.default.execute
-      ) {
-        continue;
-      }
+      if (!command.default?.name || !command.default?.execute) continue;
 
       this.commands.set(command.default.name, command.default);
     }
+    await loadSlashCommands(this);
 
-    logger.info(`Registered ${this.commands.size} commands.`);
+    logger.info(
+      `Loaded ${this.commands.size} message commands + ${this.slashCommands.size} slash commands.`
+    );
   }
 
   async registerEvents() {

@@ -1,30 +1,29 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import { infoEmbed, successEmbed } from '../../utils/embeds.js';
 import constants from '../../utils/constants.js';
 
 export default {
-  name: 'sync',
+  data: new SlashCommandBuilder()
+    .setName('sync')
+    .setDescription('Syncs roles for all members')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   /**
    * @param {import("../../client/bot.js").Bot} client
-   * @param {import("discord.js").Message} message
+   * @param {import("discord.js").ChatInputCommandInteraction} interaction
    */
-  async execute(client, message) {
-    if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
-      return;
-    }
-
+  async execute(client, interaction) {
     const guildData =
-      (await client.db.get(`guild_${message.guild.id}`)) || {};
+      (await client.db.get(`guild_${interaction.guild.id}`)) || {};
 
     const communityRole = guildData.autorole
-      ? message.guild.roles.cache.get(guildData.autorole)
+      ? interaction.guild.roles.cache.get(guildData.autorole)
       : null;
 
-    const boosterRole = message.guild.roles.premiumSubscriberRole || null;
-    const members = message.guild.members.cache;
+    const boosterRole = interaction.guild.roles.premiumSubscriberRole || null;
+    const members = interaction.guild.members.cache;
 
-    const statusMessage = await message.reply({
+    await interaction.reply({
       embeds: [infoEmbed(`Starting sync for ${members.size} members...`)],
     });
 
@@ -34,8 +33,8 @@ export default {
       const highestRole =
         hoistedRoles.size > 0
           ? hoistedRoles.reduce((highest, role) =>
-              role.position > highest.position ? role : highest,
-            )
+            role.position > highest.position ? role : highest,
+          )
           : null;
 
       const rolesToKeep = new Set();
@@ -58,7 +57,7 @@ export default {
       );
 
       if (rolesToRemove.size > 0) {
-        await member.roles.remove(rolesToRemove).catch(() => {});
+        await member.roles.remove(rolesToRemove).catch(() => { });
       }
 
       const roleToAdd =
@@ -68,11 +67,11 @@ export default {
           : null);
 
       if (roleToAdd && !member.roles.cache.has(roleToAdd.id)) {
-        await member.roles.add(roleToAdd).catch(() => {});
+        await member.roles.add(roleToAdd).catch(() => { });
       }
     }
 
-    await statusMessage.edit({
+    await interaction.editReply({
       embeds: [successEmbed(`Finished sync for all ${members.size} members!`)],
     });
   },
