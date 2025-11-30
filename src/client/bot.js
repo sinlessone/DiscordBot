@@ -50,10 +50,10 @@ export class Bot extends Client {
 
       this.commands.set(command.default.name, command.default);
     }
-    // await loadSlashCommands(this);
+    await loadSlashCommands(this);
 
     logger.info(
-      `Loaded ${this.commands.size} commands.`
+      `Loaded ${this.commands.size} message commands + ${this.slashCommands.size} slash commands.`
     );
   }
 
