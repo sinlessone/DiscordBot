@@ -383,10 +383,12 @@ async function reactionRoleEmbedCommand(client, message) {
     },
   ];
 
-  const embed = client.embed()
+  const embed = client
+    .embed()
     .setTitle('Reaction Roles')
-    .setDescription('Click the buttons below to get or remove roles!')
-    .setTimestamp();
+    .setDescription(
+      'Click the buttons below to get or remove roles!',
+    );
 
   const rows = [];
   for (let i = 0; i < reactionRoles.length; i += 5) {

@@ -3,7 +3,7 @@ import { errorEmbed, successEmbed } from '../utils/embeds.js';
 
 export default {
   name: Events.InteractionCreate,
-  
+
   async execute(client, interaction) {
     if (!interaction.isButton()) return;
 
