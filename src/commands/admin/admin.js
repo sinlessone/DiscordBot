@@ -1,6 +1,7 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 import { sendDM } from '../../utils/dmUtils.js';
+import constants from '../../utils/constants.js';
 
 /** Thank you oblongboot for this command */
 export default {
@@ -25,6 +26,11 @@ export default {
     switch (subcommand) {
       case 'dmall': {
         await handleDMAll(client, message, args);
+        break;
+      }
+
+      case "reactionroleembed": {
+        await reactionRoleEmbedCommand(client, message);
         break;
       }
 
@@ -340,4 +346,64 @@ async function handleStickyMessage(client, message, args) {
       }
     });
   }
+}
+
+async function reactionRoleEmbedCommand(client, message) {
+    if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        return message.reply({
+            embeds: [errorEmbed('You need Administrator permissions to use this command!')],
+        });
+    }
+
+    const reactionRoles = [
+        { label: 'Updates', roleId: constants.ROLES.UPDATES, style: ButtonStyle.Primary, emoji: '🗣️' },
+        { label: 'QOTD Ping', roleId: constants.ROLES.QOTD_PING, style: ButtonStyle.Success, emoji: '🔥' },
+    ];
+
+    const embed = new EmbedBuilder()
+        .setTitle('Reaction Roles')
+        .setDescription('Click the buttons below to get or remove roles!')
+        .setColor('#5865F2')
+        .addFields(
+            reactionRoles.map(rr => ({
+                name: rr.label,
+                value: `<@&${rr.roleId}>`,
+                inline: true
+            }))
+        )
+        .setTimestamp();
+
+    const rows = [];
+    for (let i = 0; i < reactionRoles.length; i += 5) {
+        const row = new ActionRowBuilder();
+        const chunk = reactionRoles.slice(i, i + 5);
+        
+        chunk.forEach(rr => {
+            const button = new ButtonBuilder()
+                .setCustomId(`role_button:${rr.roleId}`)
+                .setLabel(rr.label)
+                .setStyle(rr.style);
+            
+            if (rr.emoji) {
+                button.setEmoji(rr.emoji);
+            }
+            
+            row.addComponents(button);
+        });
+        
+        rows.push(row);
+    }
+
+    try {
+        await message.channel.send({
+            embeds: [embed],
+            components: rows
+        });
+
+        try {await message.delete()} catch (e) {}
+    } catch (error) {
+        return message.reply({
+            embeds: [errorEmbed('Failed to send reaction role embed: ' + error.message)],
+        });
+    }
 }

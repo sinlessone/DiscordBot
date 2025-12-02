@@ -22,6 +22,8 @@ export default {
 
     const boosterRole = interaction.guild.roles.premiumSubscriberRole || null;
     const members = interaction.guild.members.cache;
+    const updatesRole = interaction.guild.roles.cache.get(constants.ROLES.UPDATES);
+    const qotdPingRole = interaction.guild.roles.cache.get(constants.ROLES.QOTD_PING);
 
     await interaction.reply({
       embeds: [infoEmbed(`Starting sync for ${members.size} members...`)],
@@ -40,6 +42,8 @@ export default {
       const rolesToKeep = new Set();
 
       if (boosterRole) rolesToKeep.add(boosterRole.id);
+      if (updatesRole) rolesToKeep.add(constants.ROLES.UPDATES);
+      if (qotdPingRole) rolesToKeep.add(constants.ROLES.QOTD_PING);
       if (highestRole) rolesToKeep.add(highestRole.id);
 
       const onlyUpdate = member.roles.cache.size === 1;
