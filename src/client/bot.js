@@ -46,14 +46,15 @@ export class Bot extends Client {
 
     for (const filePath of commandFiles) {
       const command = await import(`file://${filePath}`);
-      if (!command.default?.name || !command.default?.execute) continue;
+      if (!command.default?.name || !command.default?.execute)
+        continue;
 
       this.commands.set(command.default.name, command.default);
     }
     await loadSlashCommands(this);
 
     logger.info(
-      `Loaded ${this.commands.size} message commands + ${this.slashCommands.size} slash commands.`
+      `Loaded ${this.commands.size} message commands + ${this.slashCommands.size} slash commands.`,
     );
   }
 

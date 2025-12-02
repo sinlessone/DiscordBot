@@ -20,23 +20,32 @@ export default {
       ? interaction.guild.roles.cache.get(guildData.autorole)
       : null;
 
-    const boosterRole = interaction.guild.roles.premiumSubscriberRole || null;
+    const boosterRole =
+      interaction.guild.roles.premiumSubscriberRole || null;
     const members = interaction.guild.members.cache;
-    const updatesRole = interaction.guild.roles.cache.get(constants.ROLES.UPDATES);
-    const qotdPingRole = interaction.guild.roles.cache.get(constants.ROLES.QOTD_PING);
+    const updatesRole = interaction.guild.roles.cache.get(
+      constants.ROLES.UPDATES,
+    );
+    const qotdPingRole = interaction.guild.roles.cache.get(
+      constants.ROLES.QOTD_PING,
+    );
 
     await interaction.reply({
-      embeds: [infoEmbed(`Starting sync for ${members.size} members...`)],
+      embeds: [
+        infoEmbed(`Starting sync for ${members.size} members...`),
+      ],
     });
 
     for (const member of members.values()) {
-      const hoistedRoles = member.roles.cache.filter((role) => role.hoist);
+      const hoistedRoles = member.roles.cache.filter(
+        (role) => role.hoist,
+      );
 
       const highestRole =
         hoistedRoles.size > 0
           ? hoistedRoles.reduce((highest, role) =>
-            role.position > highest.position ? role : highest,
-          )
+              role.position > highest.position ? role : highest,
+            )
           : null;
 
       const rolesToKeep = new Set();
@@ -61,22 +70,26 @@ export default {
       );
 
       if (rolesToRemove.size > 0) {
-        await member.roles.remove(rolesToRemove).catch(() => { });
+        await member.roles.remove(rolesToRemove).catch(() => {});
       }
 
       const roleToAdd =
         highestRole ||
-        ((onlyUpdate || member.roles.cache.has(boosterRole?.id))
+        (onlyUpdate || member.roles.cache.has(boosterRole?.id)
           ? communityRole
           : null);
 
       if (roleToAdd && !member.roles.cache.has(roleToAdd.id)) {
-        await member.roles.add(roleToAdd).catch(() => { });
+        await member.roles.add(roleToAdd).catch(() => {});
       }
     }
 
     await interaction.editReply({
-      embeds: [successEmbed(`Finished sync for all ${members.size} members!`)],
+      embeds: [
+        successEmbed(
+          `Finished sync for all ${members.size} members!`,
+        ),
+      ],
     });
   },
 };

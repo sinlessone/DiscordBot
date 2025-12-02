@@ -9,7 +9,9 @@ export default {
   async execute(client) {
     logger.info(`Client is ready! Logged in as ${client.user.tag}`);
 
-    const commands = client.slashCommands.map((cmd) => cmd.data.toJSON());
+    const commands = client.slashCommands.map((cmd) =>
+      cmd.data.toJSON(),
+    );
     const users = new Set();
     const guilds = await client.guilds.fetch();
 
