@@ -321,6 +321,7 @@ async function handleStickyMessage(client, message, args) {
 
   if (!client.stickyListenerRegistered) {
     client.stickyListenerRegistered = true;
+
     client.on('messageCreate', async (msg) => {
       if (!msg.guild) return;
       const sticky = client.stickyMessages.get(msg.channel.id);
@@ -371,28 +372,20 @@ async function reactionRoleEmbedCommand(client, message) {
     {
       label: 'Updates',
       roleId: constants.ROLES.UPDATES,
-      style: ButtonStyle.Primary,
-      emoji: '🗣️',
+      style: ButtonStyle.Secondary,
+      emoji: '🔔',
     },
     {
       label: 'QOTD Ping',
       roleId: constants.ROLES.QOTD_PING,
-      style: ButtonStyle.Success,
-      emoji: '🔥',
+      style: ButtonStyle.Secondary,
+      emoji: '❓',
     },
   ];
 
-  const embed = new EmbedBuilder()
+  const embed = client.embed()
     .setTitle('Reaction Roles')
     .setDescription('Click the buttons below to get or remove roles!')
-    .setColor('#5865F2')
-    .addFields(
-      reactionRoles.map((rr) => ({
-        name: rr.label,
-        value: `<@&${rr.roleId}>`,
-        inline: true,
-      })),
-    )
     .setTimestamp();
 
   const rows = [];

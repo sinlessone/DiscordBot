@@ -3,6 +3,7 @@ import { errorEmbed, successEmbed } from '../utils/embeds.js';
 
 export default {
   name: Events.InteractionCreate,
+  
   async execute(client, interaction) {
     if (!interaction.isButton()) return;
 
@@ -43,7 +44,7 @@ export default {
       if (member.roles.cache.has(roleId)) {
         await member.roles.remove(roleId);
         await interaction.reply({
-          embeds: [successEmbed(`Removed role **${role.name}**`)],
+          embeds: [errorEmbed(`Removed role **${role.name}**`)],
           flags: MessageFlags.Ephemeral,
         });
       } else {
