@@ -40,6 +40,11 @@ export default {
         break;
       }
 
+      case 'tickets': {
+        await ticketsEmbed(client, message)
+        break;
+      }
+
       case 'stickymessage': {
         await handleStickyMessage(client, message, args);
         break;
@@ -429,4 +434,31 @@ async function reactionRoleEmbedCommand(client, message) {
       ],
     });
   }
+}
+
+async function ticketsEmbed(client, message) {
+  if (
+    !message.member.permissions.has(PermissionFlagsBits.Administrator)
+  ) {
+    return message.reply({embeds: [errorEmbed("Insufficient Permssions.")]})
+  }
+
+  const embed = client.embed()
+    .setTitle("Tickets")
+    .setDescription("Click the button to open a ticket!")
+    .setFooter({text: "Don't hesitate to open a ticket for any questions!"})
+
+  const button = new ButtonBuilder()
+    .setCustomId("ticketsPanel")
+    .setLabel("Open")
+    .setEmoji("✉️")
+    .setStyle(ButtonStyle.Secondary)
+
+  const row = new ActionRowBuilder()
+    .addComponents(button);
+
+  await message.channel.send({
+    embeds: [embed],
+    components: [row]
+  })
 }
