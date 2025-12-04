@@ -20,7 +20,7 @@ export default {
     const boosterRole = guild.roles.premiumSubscriberRole || null;
     const updatesRole = guild.roles.cache.get(constants.ROLES.UPDATES);
     const qotdPingRole = guild.roles.cache.get(constants.ROLES.QOTD_PING);
-
+    const supportRole = guild.roles.cache.get(constants.ROLES.TICKET_PING);
     const members = guild.members.cache;
 
     await interaction.reply({
@@ -31,7 +31,8 @@ export default {
       const ignoredRoles = new Set([
         boosterRole?.id,
         updatesRole?.id,
-        qotdPingRole?.id
+        qotdPingRole?.id,
+        supportRole?.id
       ]);
 
       const realRoles = member.roles.cache.filter(
@@ -47,11 +48,11 @@ export default {
       const rolesToRemove = realRoles.filter(r => r.id !== chosenRole?.id);
 
       if (rolesToRemove.size > 0) {
-        await member.roles.remove(rolesToRemove).catch(() => {});
+        await member.roles.remove(rolesToRemove).catch(() => { });
       }
 
       if (chosenRole && !member.roles.cache.has(chosenRole.id)) {
-        await member.roles.add(chosenRole).catch(() => {});
+        await member.roles.add(chosenRole).catch(() => { });
       }
     }
 
