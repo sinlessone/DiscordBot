@@ -14,10 +14,9 @@ export default {
    */
   async execute(client, interaction) {
     const guild = interaction.guild;
-    const guildData = (await client.db.get(`guild_${guild.id}`)) || {};
-
-    const communityRole = guild.roles.cache.get(guildData.autorole);
+    
     const boosterRole = guild.roles.premiumSubscriberRole || null;
+    const communityRole = guild.roles.cache.get(constants.COMMUNITY_ROLE);
     const updatesRole = guild.roles.cache.get(constants.ROLES.UPDATES);
     const qotdPingRole = guild.roles.cache.get(constants.ROLES.QOTD_PING);
     const supportRole = guild.roles.cache.get(constants.ROLES.TICKET_PING);

@@ -1,4 +1,4 @@
-// VERY poor implementation, but i cba to make a better system
+// VERY poor implementation
 export default {
   COMMAND_PREFIX: '.',
 
@@ -8,6 +8,7 @@ export default {
   // For moderation logging and auto role
   MODLOGS_CHANNEL: '1442896999237030031',
   COMMUNITY_ROLE: '1416251642185121823',
+  
   ROLES: {
     UPDATES: '1445497401614925914',
     QOTD_PING: '1445497592573067546',
