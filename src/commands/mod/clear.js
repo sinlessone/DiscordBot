@@ -27,13 +27,15 @@ export default {
       });
     }
 
-    await message.delete();
-    await message.channel.bulkDelete(amount, true);
+    try {
+      await message.delete();
+      await message.channel.bulkDelete(amount, true);
 
-    const msg = await message.channel.send({
-      embeds: [successEmbed(`**Deleted ${amount} messages.**`)],
-    });
+      const msg = await message.channel.send({
+        embeds: [successEmbed(`**Deleted ${amount} messages.**`)],
+      });
 
-    setTimeout(() => msg.delete(), 3000);
+      setTimeout(() => msg.delete(), 3000);
+    } catch (error) {}
   },
 };

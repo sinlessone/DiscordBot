@@ -9,7 +9,9 @@ export default {
    * @param {import("discord.js").GuildMember} member
    */
   async execute(client, member) {
-      const channel = client.channels.cache.get(constants.MODLOGS_CHANNEL);
+    const channel = client.channels.cache.get(
+      constants.MODLOGS_CHANNEL,
+    );
 
     if (channel) {
       await channel.send({
@@ -17,6 +19,6 @@ export default {
       });
     }
 
-    await member.roles.add(constants.COMMUNITY_ROLE);
+    await member.roles.add(constants.ROLES.COMMUNITY);
   },
 };

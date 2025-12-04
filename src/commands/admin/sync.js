@@ -14,16 +14,26 @@ export default {
    */
   async execute(client, interaction) {
     const guild = interaction.guild;
-    
+
     const boosterRole = guild.roles.premiumSubscriberRole || null;
-    const communityRole = guild.roles.cache.get(constants.COMMUNITY_ROLE);
-    const updatesRole = guild.roles.cache.get(constants.ROLES.UPDATES);
-    const qotdPingRole = guild.roles.cache.get(constants.ROLES.QOTD_PING);
-    const supportRole = guild.roles.cache.get(constants.ROLES.TICKET_PING);
+    const communityRole = guild.roles.cache.get(
+      constants.ROLES.COMMUNITY,
+    );
+    const updatesRole = guild.roles.cache.get(
+      constants.ROLES.UPDATES,
+    );
+    const qotdPingRole = guild.roles.cache.get(
+      constants.ROLES.QOTD_PING,
+    );
+    const supportRole = guild.roles.cache.get(
+      constants.ROLES.TICKET_PING,
+    );
     const members = guild.members.cache;
 
     await interaction.reply({
-      embeds: [infoEmbed(`Starting sync for ${members.size} members...`)]
+      embeds: [
+        infoEmbed(`Starting sync for ${members.size} members...`),
+      ],
     });
 
     for (const member of members.values()) {
@@ -31,32 +41,40 @@ export default {
         boosterRole?.id,
         updatesRole?.id,
         qotdPingRole?.id,
-        supportRole?.id
+        supportRole?.id,
       ]);
 
       const realRoles = member.roles.cache.filter(
-        r => !ignoredRoles.has(r.id) && r.id !== guild.id
+        (r) => !ignoredRoles.has(r.id) && r.id !== guild.id,
       );
 
       const highestRealRole = realRoles.size
-        ? realRoles.reduce((a, b) => (b.position > a.position ? b : a))
+        ? realRoles.reduce((a, b) =>
+            b.position > a.position ? b : a,
+          )
         : null;
 
       const chosenRole = highestRealRole ?? communityRole;
 
-      const rolesToRemove = realRoles.filter(r => r.id !== chosenRole?.id);
+      const rolesToRemove = realRoles.filter(
+        (r) => r.id !== chosenRole?.id,
+      );
 
       if (rolesToRemove.size > 0) {
-        await member.roles.remove(rolesToRemove).catch(() => { });
+        await member.roles.remove(rolesToRemove).catch(() => {});
       }
 
       if (chosenRole && !member.roles.cache.has(chosenRole.id)) {
-        await member.roles.add(chosenRole).catch(() => { });
+        await member.roles.add(chosenRole).catch(() => {});
       }
     }
 
     await interaction.editReply({
-      embeds: [successEmbed(`Finished sync for all ${members.size} members!`)]
+      embeds: [
+        successEmbed(
+          `Finished sync for all ${members.size} members!`,
+        ),
+      ],
     });
-  }
+  },
 };

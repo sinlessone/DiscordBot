@@ -18,8 +18,8 @@ export const errorEmbed = (description) => {
     .setColor(0xed4245);
 };
 
-export const cobaltColorEmbed = (description) => {
+export const mainEmbed = (description) => {
   return new EmbedBuilder()
     .setDescription(description)
-    .setColor(0x4682B4)
-}
+    .setColor(0x4682b4);
+};

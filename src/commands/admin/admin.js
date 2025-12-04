@@ -24,12 +24,11 @@ export default {
     switch (subcommand) {
       case 'purgetickets': {
         const ticketChannels = message.guild.channels.cache.filter(
-          (channel) =>
-            channel.name.startsWith('ticket-'),
+          (channel) => channel.name.startsWith('ticket-'),
         );
 
         let deletedCount = 0;
-        
+
         for (const [id, channel] of ticketChannels) {
           try {
             await channel.delete('Purging ticket channels');
@@ -44,9 +43,7 @@ export default {
 
         await message.reply({
           embeds: [
-            successEmbed(
-              `Purged ${deletedCount} ticket channels.`,
-            ),
+            successEmbed(`Purged ${deletedCount} ticket channels.`),
           ],
         });
 
@@ -59,7 +56,7 @@ export default {
       }
 
       case 'tickets': {
-        await ticketsEmbed(client, message)
+        await ticketsEmbed(client, message);
         break;
       }
 
@@ -257,25 +254,29 @@ async function ticketsEmbed(client, message) {
   if (
     !message.member.permissions.has(PermissionFlagsBits.Administrator)
   ) {
-    return message.reply({embeds: [errorEmbed("Insufficient Permssions.")]})
+    return message.reply({
+      embeds: [errorEmbed('Insufficient Permssions.')],
+    });
   }
 
-  const embed = client.embed()
-    .setTitle("Tickets")
-    .setDescription("Click the button to open a ticket!")
-    .setFooter({text: "Don't hesitate to open a ticket for any questions!"})
+  const embed = client
+    .embed()
+    .setTitle('Tickets')
+    .setDescription('Click the button to open a ticket!')
+    .setFooter({
+      text: "Don't hesitate to open a ticket for any questions!",
+    });
 
   const button = new ButtonBuilder()
-    .setCustomId("ticketsPanel")
-    .setLabel("Open")
-    .setEmoji("✉️")
-    .setStyle(ButtonStyle.Secondary)
+    .setCustomId('ticketsPanel')
+    .setLabel('Open')
+    .setEmoji('✉️')
+    .setStyle(ButtonStyle.Secondary);
 
-  const row = new ActionRowBuilder()
-    .addComponents(button);
+  const row = new ActionRowBuilder().addComponents(button);
 
   await message.channel.send({
     embeds: [embed],
-    components: [row]
-  })
+    components: [row],
+  });
 }

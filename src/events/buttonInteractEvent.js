@@ -6,7 +6,11 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from 'discord.js';
-import { errorEmbed, successEmbed, cobaltColorEmbed } from '../utils/embeds.js';
+import {
+  errorEmbed,
+  successEmbed,
+  mainEmbed,
+} from '../utils/embeds.js';
 import constants from '../utils/constants.js';
 
 let rateLimitedTickets = [];
@@ -17,19 +21,24 @@ export default {
   async execute(client, interaction) {
     if (!interaction.isButton()) return;
     const customId = interaction.customId;
-    if (!customId.startsWith('role_button:') &&
-      !customId.startsWith("ticketsPanel") &&
-      !customId.startsWith("ticketClose-") &&
-      !customId.startsWith("ticketDelete-") &&
-      !customId.startsWith("ticketReopen-")
-    ) return;
+    if (
+      !customId.startsWith('role_button:') &&
+      !customId.startsWith('ticketsPanel') &&
+      !customId.startsWith('ticketClose-') &&
+      !customId.startsWith('ticketDelete-') &&
+      !customId.startsWith('ticketReopen-')
+    )
+      return;
 
     let action;
     if (customId.startsWith('role_button:')) action = 'role';
     else if (customId === 'ticketsPanel') action = 'ticketOpen';
-    else if (customId.startsWith('ticketClose-')) action = 'ticketClose';
-    else if (customId.startsWith('ticketDelete-')) action = 'ticketDelete';
-    else if (customId.startsWith('ticketReopen-')) action = 'ticketReopen';
+    else if (customId.startsWith('ticketClose-'))
+      action = 'ticketClose';
+    else if (customId.startsWith('ticketDelete-'))
+      action = 'ticketDelete';
+    else if (customId.startsWith('ticketReopen-'))
+      action = 'ticketReopen';
 
     switch (action) {
       case 'ticketOpen':
@@ -38,66 +47,91 @@ export default {
 
       case 'ticketClose': {
         const channelId = customId.split('-')[1];
-        const channel = interaction.guild.channels.cache.get(channelId);
+        const channel =
+          interaction.guild.channels.cache.get(channelId);
 
         if (!channel) {
           return interaction.reply({
-            embeds: [errorEmbed("Ticket channel not found!")],
-            flags: MessageFlags.Ephemeral
+            embeds: [errorEmbed('Ticket channel not found!')],
+            flags: MessageFlags.Ephemeral,
           });
         }
 
         try {
-          const userOverwrite = channel.permissionOverwrites.cache.find(
-            overwrite => overwrite.type === 1 && overwrite.id !== interaction.client.user.id
-          );
+          const userOverwrite =
+            channel.permissionOverwrites.cache.find(
+              (overwrite) =>
+                overwrite.type === 1 &&
+                overwrite.id !== interaction.client.user.id,
+            );
 
           if (userOverwrite) {
-            await channel.permissionOverwrites.edit(userOverwrite.id, {
-              SendMessages: false
-            });
+            await channel.permissionOverwrites.edit(
+              userOverwrite.id,
+              {
+                SendMessages: false,
+              },
+            );
           }
 
-          const newName = channel.name.replace('ticket-', 'closed-ticket-');
+          const newName = channel.name.replace(
+            'ticket-',
+            'closed-ticket-',
+          );
           try {
             await channel.setName(newName);
           } catch (e) {
             console.log(e.message);
             if (e.code == 429) {
               interaction.reply({
-                embeds: [errorEmbed("This ticket has been rate limited from renaming.")],
-                flags: MessageFlags.Ephemeral
+                embeds: [
+                  errorEmbed(
+                    'This ticket has been rate limited from renaming.',
+                  ),
+                ],
+                flags: MessageFlags.Ephemeral,
               });
               rateLimitedTickets.push(channelId);
               setTimeout(() => {
-                rateLimitedTickets = rateLimitedTickets.filter(id => id !== channelId);
+                rateLimitedTickets = rateLimitedTickets.filter(
+                  (id) => id !== channelId,
+                );
               }, 60000);
             } else {
               interaction.reply({
-                embeds: [errorEmbed(`Failed to rename ticket: ${e.message}`)],
-                flags: MessageFlags.Ephemeral
+                embeds: [
+                  errorEmbed(`Failed to rename ticket: ${e.message}`),
+                ],
+                flags: MessageFlags.Ephemeral,
               });
             }
           }
 
           const reopenButton = new ButtonBuilder()
             .setCustomId(`ticketReopen-${channel.id}`)
-            .setLabel("Reopen")
-            .setEmoji("🔓")
+            .setLabel('Reopen')
+            .setEmoji('🔓')
             .setStyle(ButtonStyle.Secondary);
 
-          const row = new ActionRowBuilder()
-            .addComponents(reopenButton);
+          const row = new ActionRowBuilder().addComponents(
+            reopenButton,
+          );
 
           await interaction.reply({
-            embeds: [errorEmbed("Ticket closed! Click the Reopen button to reopen it!")],
+            embeds: [
+              errorEmbed(
+                'Ticket closed! Click the Reopen button to reopen it!',
+              ),
+            ],
             components: [row],
           });
         } catch (error) {
           console.error(error);
           await interaction.reply({
-            embeds: [errorEmbed(`Failed to close ticket: ${error.message}`)],
-            flags: MessageFlags.Ephemeral
+            embeds: [
+              errorEmbed(`Failed to close ticket: ${error.message}`),
+            ],
+            flags: MessageFlags.Ephemeral,
           });
         }
         break;
@@ -105,88 +139,108 @@ export default {
 
       case 'ticketReopen': {
         const channelId = customId.split('-')[1];
-        const channel = interaction.guild.channels.cache.get(channelId);
+        const channel =
+          interaction.guild.channels.cache.get(channelId);
 
         if (!channel) {
           return interaction.reply({
-            embeds: [errorEmbed("Ticket channel not found!")],
-            flags: MessageFlags.Ephemeral
+            embeds: [errorEmbed('Ticket channel not found!')],
+            flags: MessageFlags.Ephemeral,
           });
         }
 
         try {
-          await channel.setName(channel.name.replace('closed-ticket-', 'ticket-'));
-
-          const userOverwrite = channel.permissionOverwrites.cache.find(
-            overwrite => overwrite.type === 1 && overwrite.id !== interaction.client.user.id
+          await channel.setName(
+            channel.name.replace('closed-ticket-', 'ticket-'),
           );
 
+          const userOverwrite =
+            channel.permissionOverwrites.cache.find(
+              (overwrite) =>
+                overwrite.type === 1 &&
+                overwrite.id !== interaction.client.user.id,
+            );
+
           if (userOverwrite) {
-            await channel.permissionOverwrites.edit(userOverwrite.id, {
-              SendMessages: true
-            });
+            await channel.permissionOverwrites.edit(
+              userOverwrite.id,
+              {
+                SendMessages: true,
+              },
+            );
           }
 
           const closeButton = new ButtonBuilder()
             .setCustomId(`ticketClose-${channel.id}`)
-            .setLabel("Close")
-            .setEmoji("🔒")
+            .setLabel('Close')
+            .setEmoji('🔒')
             .setStyle(ButtonStyle.Secondary);
 
           const deleteButton = new ButtonBuilder()
             .setCustomId(`ticketDelete-${channel.id}`)
-            .setLabel("Delete")
-            .setEmoji("🗑️")
+            .setLabel('Delete')
+            .setEmoji('🗑️')
             .setStyle(ButtonStyle.Secondary);
 
-          const row = new ActionRowBuilder()
-            .addComponents(closeButton, deleteButton);
+          const row = new ActionRowBuilder().addComponents(
+            closeButton,
+            deleteButton,
+          );
 
           await interaction.reply({
-            embeds: [successEmbed("Ticket reopened!")],
-            components: [row]
+            embeds: [successEmbed('Ticket reopened!')],
+            components: [row],
           });
         } catch (error) {
           console.error(error);
           await interaction.reply({
-            embeds: [errorEmbed(`Failed to reopen ticket: ${error.message}`)],
-            flags: MessageFlags.Ephemeral
+            embeds: [
+              errorEmbed(`Failed to reopen ticket: ${error.message}`),
+            ],
+            flags: MessageFlags.Ephemeral,
           });
         }
         break;
       }
 
       case 'ticketDelete': {
-        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        if (
+          !interaction.member.permissions.has(
+            PermissionFlagsBits.Administrator,
+          )
+        ) {
           return interaction.reply({
-            embeds: [errorEmbed("Only Admins can delete tickets!")],
-            flags: MessageFlags.Ephemeral
+            embeds: [errorEmbed('Only Admins can delete tickets!')],
+            flags: MessageFlags.Ephemeral,
           });
         }
 
         const channelId = customId.split('-')[1];
-        const channel = interaction.guild.channels.cache.get(channelId);
+        const channel =
+          interaction.guild.channels.cache.get(channelId);
 
         if (!channel) {
           return interaction.reply({
-            embeds: [errorEmbed("Ticket not found!")],
-            flags: MessageFlags.Ephemeral
+            embeds: [errorEmbed('Ticket not found!')],
+            flags: MessageFlags.Ephemeral,
           });
         }
 
         try {
           await interaction.reply({
-            embeds: [errorEmbed("Deleting ticket in 5 seconds...")]
+            embeds: [errorEmbed('Deleting ticket in 5 seconds...')],
           });
 
           setTimeout(async () => {
-            await channel.delete("Ticket deleted via Delete button");
+            await channel.delete('Ticket deleted via Delete button');
           }, 5000);
         } catch (error) {
           console.error(error);
           await interaction.reply({
-            embeds: [errorEmbed(`Failed to delete ticket: ${error.message}`)],
-            flags: MessageFlags.Ephemeral
+            embeds: [
+              errorEmbed(`Failed to delete ticket: ${error.message}`),
+            ],
+            flags: MessageFlags.Ephemeral,
           });
         }
         break;
@@ -239,8 +293,8 @@ export default {
             embeds: [
               errorEmbed(
                 'Failed to update roles, please ping a <@&1351294598479347732> in general so they can fix this! (error: ' +
-                error.message +
-                ')',
+                  error.message +
+                  ')',
               ),
             ],
             flags: MessageFlags.Ephemeral,
@@ -250,24 +304,29 @@ export default {
       }
     }
   },
-}
+};
 
 async function tickets(interaction) {
   try {
-    const existingTicket = interaction.guild.channels.cache.find(channel =>
-      channel.name.startsWith('ticket-') &&
-      channel.permissionOverwrites.cache.has(interaction.user.id)
+    const existingTicket = interaction.guild.channels.cache.find(
+      (channel) =>
+        channel.name.startsWith('ticket-') &&
+        channel.permissionOverwrites.cache.has(interaction.user.id),
     );
 
     if (existingTicket) {
       return await interaction.reply({
-        embeds: [errorEmbed(`You already have an open ticket: <#${existingTicket.id}>`)],
-        flags: MessageFlags.Ephemeral
+        embeds: [
+          errorEmbed(
+            `You already have an open ticket: <#${existingTicket.id}>`,
+          ),
+        ],
+        flags: MessageFlags.Ephemeral,
       });
     }
 
-    const ticketChannels = interaction.guild.channels.cache.filter(channel =>
-      channel.name.includes('ticket-')
+    const ticketChannels = interaction.guild.channels.cache.filter(
+      (channel) => channel.name.includes('ticket-'),
     );
 
     const ticketNumber = ticketChannels.size + 1;
@@ -282,26 +341,34 @@ async function tickets(interaction) {
         },
         {
           id: interaction.user.id,
-          allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'],
+          allow: [
+            'ViewChannel',
+            'SendMessages',
+            'ReadMessageHistory',
+          ],
         },
         {
           id: interaction.client.user.id,
-          allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'],
+          allow: [
+            'ViewChannel',
+            'SendMessages',
+            'ReadMessageHistory',
+          ],
         },
       ],
     });
 
     const closeButton = new ButtonBuilder()
       .setCustomId(`ticketClose-${ticketChannel.id}`)
-      .setLabel("Close")
-      .setEmoji("🔒")
-      .setStyle(ButtonStyle.Secondary)
+      .setLabel('Close')
+      .setEmoji('🔒')
+      .setStyle(ButtonStyle.Secondary);
 
     const deleteButton = new ButtonBuilder()
       .setCustomId(`ticketDelete-${ticketChannel.id}`)
-      .setLabel("Delete")
-      .setEmoji("🗑️")
-      .setStyle(ButtonStyle.Secondary)
+      .setLabel('Delete')
+      .setEmoji('🗑️')
+      .setStyle(ButtonStyle.Secondary);
 
     const row = new ActionRowBuilder()
       .addComponents(closeButton)
@@ -309,26 +376,33 @@ async function tickets(interaction) {
 
     await ticketChannel.send({
       content: `<@${interaction.user.id}> (||<@&${constants.ROLES.TICKET_PING}>||)`,
-      embeds: [cobaltColorEmbed(`
+      embeds: [
+        mainEmbed(`
         Thank you for creating a ticket <@${interaction.user.id}>! Our support team will assist you as soon as possible!
         
         Please do **NOT** spam ping Developers or Admins, we get pinged on ticket creation!
         
         While you are waiting for us to reply, please describe your issue and/or ask your question, if a ticket is left empty after an hour of creation, it **WILL** be closed!
         
-        Thank you for your patience!`
-      )],
-      components: [row]
+        Thank you for your patience!`),
+      ],
+      components: [row],
     });
     return await interaction.reply({
-      embeds: [successEmbed(`Opened <#${ticketChannel.id}>! Please follow the instructions provided in the ticket.`)],
-      flags: MessageFlags.Ephemeral
+      embeds: [
+        successEmbed(
+          `Opened <#${ticketChannel.id}>! Please follow the instructions provided in the ticket.`,
+        ),
+      ],
+      flags: MessageFlags.Ephemeral,
     });
   } catch (error) {
     console.error(error);
     await interaction.followUp({
-      embeds: [errorEmbed(`Failed to create ticket: ${error.message}`)],
-      flags: MessageFlags.Ephemeral
+      embeds: [
+        errorEmbed(`Failed to create ticket: ${error.message}`),
+      ],
+      flags: MessageFlags.Ephemeral,
     });
   }
 }

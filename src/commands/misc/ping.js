@@ -1,3 +1,5 @@
+import { mainEmbed } from '../../utils/embeds.js';
+
 export default {
   name: 'ping',
 
@@ -6,7 +8,7 @@ export default {
    * @param {import("discord.js").Message} message
    */
   async execute(client, message) {
-    const embed = client.embed().setDescription('**Pong!**');
+    const embed = mainEmbed('Pong!');
 
     await message.reply({
       embeds: [embed],
