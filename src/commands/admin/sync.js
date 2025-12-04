@@ -14,21 +14,25 @@ export default {
    */
   async execute(client, interaction) {
     const guild = interaction.guild;
-
+    const members = guild.members.cache;
+    
     const boosterRole = guild.roles.premiumSubscriberRole || null;
+
     const communityRole = guild.roles.cache.get(
       constants.ROLES.COMMUNITY,
     );
+
     const updatesRole = guild.roles.cache.get(
       constants.ROLES.UPDATES,
     );
+
     const qotdPingRole = guild.roles.cache.get(
       constants.ROLES.QOTD_PING,
     );
+
     const supportRole = guild.roles.cache.get(
-      constants.ROLES.TICKET_PING,
+      constants.ROLES.SUPPORT,
     );
-    const members = guild.members.cache;
 
     await interaction.reply({
       embeds: [

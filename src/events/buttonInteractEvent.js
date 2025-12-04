@@ -375,7 +375,7 @@ async function tickets(interaction) {
       .addComponents(deleteButton);
 
     await ticketChannel.send({
-      content: `<@${interaction.user.id}> (||<@&${constants.ROLES.TICKET_PING}>||)`,
+      content: `<@${interaction.user.id}> (||<@&${constants.ROLES.SUPPORT}>||)`,
       embeds: [
         mainEmbed(`
         Thank you for creating a ticket <@${interaction.user.id}>! Our support team will assist you as soon as possible!
