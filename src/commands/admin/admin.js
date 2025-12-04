@@ -35,6 +35,42 @@ export default {
         break;
       }
 
+      case 'purgetickets': {
+        if (
+          !message.member.permissions.has(
+            PermissionFlagsBits.Administrator
+        )) {
+          return message.reply({
+            embeds: [
+              errorEmbed("Insufficient Permissions."),
+            ],
+          });
+        }
+        const ticketChannels = message.guild.channels.cache.filter(
+          (channel) =>
+            channel.name.startsWith('ticket-'),
+        );
+        let deletedCount = 0;
+        for (const [channelId, channel] of ticketChannels) {
+          try {
+            await channel.delete('Purging ticket channels');
+            deletedCount++;
+          } catch (err) {
+            console.error(
+              `Failed to delete channel ${channel.name}:`,
+              err,
+            );
+          }
+        }
+        await message.reply({
+          embeds: [
+            successEmbed(
+              `Purged ${deletedCount} ticket channels.`,
+            ),
+          ],
+        });
+        break;
+      }
       case 'reactionroleembed': {
         await reactionRoleEmbedCommand(client, message);
         break;
@@ -63,7 +99,7 @@ export default {
         return message.reply({
           embeds: [
             errorEmbed(
-              `Unknown subcommand: ${subcommand}\n\nAvailable: dmall, stickymessage`,
+              `Unknown subcommand: ${subcommand}\n\nAvailable: dmall, stickymessage, purgetickets, reactionroleembed, tickets`,
             ),
           ],
         });
