@@ -87,15 +87,6 @@ export default {
       }
 
       default: {
-        if (!subcommand) {
-          return message.reply({
-            embeds: [
-              errorEmbed(
-                'Please provide a subcommand: dmall, stickymessage',
-              ),
-            ],
-          });
-        }
         return message.reply({
           embeds: [
             errorEmbed(
@@ -110,11 +101,13 @@ export default {
 
 async function handleDMAll(client, message, args) {
   const ownerId = '1367543367277219840'; // nathans id
+  
   if (message.author.id !== ownerId) {
     return message.reply({
       embeds: [errorEmbed('Only Nathan can use this command.')],
     });
   }
+  
   const messageContent = Array.isArray(args)
     ? args.join(' ')
     : typeof args === 'string'
