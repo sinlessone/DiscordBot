@@ -46,14 +46,17 @@ export default {
 
         setTimeout(() => {
           reply.delete();
-        }, 10_000);
+        }, 3_000);
 
         await message.delete();
       }
     }
 
-    if (!message.channel.name.includes('ai-chat')) return;
-    if (message.author.bot || !message.mentions.has(client.user)) {
+    if (
+      message.author.bot ||
+      !message.channel.name.includes('ai-chat') ||
+      !message.mentions.has(client.user)
+    ) {
       return;
     }
 
@@ -78,6 +81,7 @@ export default {
     }
 
     await message.channel.sendTyping();
+
     const res = await client.chatBot.generateResponse(
       content,
       message.author,
