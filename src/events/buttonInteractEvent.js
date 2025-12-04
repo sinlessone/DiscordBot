@@ -78,16 +78,6 @@ export default {
                 flags: MessageFlags.Ephemeral
               });
             }
-
-            await interaction.reply({
-              embeds: [errorEmbed("Ticket closed! User can no longer view this channel.")]
-            });
-          } catch (error) {
-            console.error(error);
-            await interaction.reply({
-              embeds: [errorEmbed(`Failed to close ticket: ${error.message}`)],
-              flags: MessageFlags.Ephemeral
-            });
           }
 
           const reopenButton = new ButtonBuilder()
@@ -100,7 +90,7 @@ export default {
             .addComponents(reopenButton);
 
           await interaction.reply({
-            embeds: [successEmbed("Ticket closed! Click the Reopen button to reopen it!")],
+            embeds: [errorEmbed("Ticket closed! Click the Reopen button to reopen it!")],
             components: [row],
           });
         } catch (error) {
@@ -134,19 +124,6 @@ export default {
           if (userOverwrite) {
             await channel.permissionOverwrites.edit(userOverwrite.id, {
               SendMessages: true
-          try {
-            await interaction.reply({
-              embeds: [errorEmbed("Deleting ticket in 5 seconds...")]
-            });
-            
-            setTimeout(async () => {
-              await channel.delete("Ticket deleted via Delete button");
-            }, 5000);
-          } catch (error) {
-            console.error(error);
-            await interaction.reply({
-              embeds: [errorEmbed(`Failed to delete ticket: ${error.message}`)],
-              flags: MessageFlags.Ephemeral
             });
           }
 
@@ -199,7 +176,7 @@ export default {
 
         try {
           await interaction.reply({
-            embeds: [successEmbed("Deleting ticket in 5 seconds...")]
+            embeds: [errorEmbed("Deleting ticket in 5 seconds...")]
           });
 
           setTimeout(async () => {
