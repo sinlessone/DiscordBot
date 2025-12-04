@@ -56,7 +56,7 @@ export default {
             }
 
             await interaction.reply({
-              embeds: [successEmbed("Ticket closed! User can no longer view this channel.")]
+              embeds: [errorEmbed("Ticket closed! User can no longer view this channel.")]
             });
           } catch (error) {
             console.error(error);
@@ -88,7 +88,7 @@ export default {
 
           try {
             await interaction.reply({
-              embeds: [successEmbed("Deleting ticket in 5 seconds...")]
+              embeds: [errorEmbed("Deleting ticket in 5 seconds...")]
             });
             
             setTimeout(async () => {
