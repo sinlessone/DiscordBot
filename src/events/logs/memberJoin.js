@@ -13,11 +13,9 @@ export default {
       constants.MODLOGS_CHANNEL,
     );
 
-    if (channel) {
-      await channel.send({
-        embeds: [successEmbed(`<@${member.id}> joined the server.`)],
-      });
-    }
+    await channel.send({
+      embeds: [successEmbed(`<@${member.id}> joined the server.`)],
+    });
 
     await member.roles.add(constants.ROLES.COMMUNITY);
   },

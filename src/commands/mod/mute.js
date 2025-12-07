@@ -1,5 +1,6 @@
 import { PermissionFlagsBits } from 'discord.js';
-import { parseDuration, searchMember } from '../../utils/search.js';
+import { searchMember } from '../../utils/search.js';
+import { parseDuration } from '../../utils/format.js';
 import { successEmbed, errorEmbed } from '../../utils/embeds.js';
 
 export default {

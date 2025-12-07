@@ -15,24 +15,17 @@ export default {
   async execute(client, interaction) {
     const guild = interaction.guild;
     const members = guild.members.cache;
-    
-    const boosterRole = guild.roles.premiumSubscriberRole || null;
 
     const communityRole = guild.roles.cache.get(
       constants.ROLES.COMMUNITY,
     );
 
-    const updatesRole = guild.roles.cache.get(
-      constants.ROLES.UPDATES,
-    );
-
-    const qotdPingRole = guild.roles.cache.get(
-      constants.ROLES.QOTD_PING,
-    );
-
-    const supportRole = guild.roles.cache.get(
-      constants.ROLES.SUPPORT,
-    );
+    const ignoredRoles = new Set([
+      guild.roles.premiumSubscriberRole || null?.id,
+      guild.roles.cache.get(constants.ROLES.UPDATES)?.id,
+      guild.roles.cache.get(constants.ROLES.QOTD_PING)?.id,
+      guild.roles.cache.get(constants.ROLES.SUPPORT)?.id,
+    ]);
 
     await interaction.reply({
       embeds: [
@@ -41,13 +34,6 @@ export default {
     });
 
     for (const member of members.values()) {
-      const ignoredRoles = new Set([
-        boosterRole?.id,
-        updatesRole?.id,
-        qotdPingRole?.id,
-        supportRole?.id,
-      ]);
-
       const realRoles = member.roles.cache.filter(
         (r) => !ignoredRoles.has(r.id) && r.id !== guild.id,
       );

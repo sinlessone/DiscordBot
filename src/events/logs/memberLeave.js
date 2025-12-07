@@ -13,10 +13,8 @@ export default {
       constants.MODLOGS_CHANNEL,
     );
 
-    if (channel) {
-      await channel.send({
-        embeds: [errorEmbed(`<@${member.id}> left the server.`)],
-      });
-    }
+    await channel.send({
+      embeds: [errorEmbed(`<@${member.id}> left the server.`)],
+    });
   },
 };

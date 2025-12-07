@@ -50,12 +50,12 @@ export default {
         break;
       }
 
-      case 'reactionroleembed': {
+      case 'rrembed': {
         await reactionRoleEmbedCommand(client, message);
         break;
       }
 
-      case 'tickets': {
+      case 'tembed': {
         await ticketsEmbed(client, message);
         break;
       }
@@ -69,7 +69,7 @@ export default {
         return message.reply({
           embeds: [
             errorEmbed(
-              `Unknown subcommand: ${subcommand}\n\nAvailable: dmall, stickymessage, purgetickets, reactionroleembed, tickets`,
+              `Unknown subcommand: ${subcommand}\n\nAvailable: dmall, stickymessage, purgetickets, rrembed, tembed`,
             ),
           ],
         });
@@ -262,15 +262,12 @@ async function ticketsEmbed(client, message) {
   const embed = client
     .embed()
     .setTitle('Tickets')
-    .setDescription('Click the button to open a ticket!')
-    .setFooter({
-      text: "Don't hesitate to open a ticket for any questions!",
-    });
+    .setDescription('Click the button to open a ticket!');
 
   const button = new ButtonBuilder()
-    .setCustomId('ticketsPanel')
+    .setCustomId('open_ticket')
     .setLabel('Open')
-    .setEmoji('✉️')
+    .setEmoji('📩')
     .setStyle(ButtonStyle.Secondary);
 
   const row = new ActionRowBuilder().addComponents(button);

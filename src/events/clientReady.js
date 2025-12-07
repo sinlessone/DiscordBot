@@ -12,6 +12,7 @@ export default {
     const commands = client.slashCommands.map((cmd) =>
       cmd.data.toJSON(),
     );
+
     const users = new Set();
     const guilds = await client.guilds.fetch();
 
