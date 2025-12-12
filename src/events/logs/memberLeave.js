@@ -1,5 +1,5 @@
+import { EmbedBuilder } from 'discord.js';
 import constants from '../../utils/constants.js';
-import { errorEmbed } from '../../utils/embeds.js';
 
 export default {
   name: 'guildMemberRemove',
@@ -13,8 +13,27 @@ export default {
       constants.MODLOGS_CHANNEL,
     );
 
-    await channel.send({
-      embeds: [errorEmbed(`<@${member.id}> left the server.`)],
-    });
+    if (!channel) return;
+
+    const avatarUrl = member.user.displayAvatarURL({ size: 256 });
+    const createdAt = `<t:${Math.floor(member.user.createdAt.getTime() / 1000)}:R>`;
+    const joinedAt = member.joinedAt
+      ? `<t:${Math.floor(member.joinedAt.getTime() / 1000)}:R>`
+      : 'Unknown';
+
+    const embed = new EmbedBuilder()
+      .setTitle('Member Left')
+      .setColor(0xed4245)
+      .setThumbnail(avatarUrl)
+      .setDescription(`${member.user.toString()} has left the server.`)
+      .addFields(
+        { name: 'Display Name', value: member.displayName || member.user.username, inline: true },
+        { name: 'Account Created', value: createdAt, inline: true },
+        { name: 'Joined Server', value: joinedAt, inline: false },
+      )
+      .setFooter({ text: `User ID: ${member.user.id}` })
+      .setTimestamp();
+
+    await channel.send({ embeds: [embed] });
   },
 };
