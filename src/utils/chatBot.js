@@ -35,9 +35,9 @@ export class ChatBot {
     } catch (error) {
       logger.error(`Error generating response: ${error}`);
       if (error instanceof ApiError) {
-        if (error.status === 503) return "The AI model is currently overloaded, Please try again later."
-        if (error.status === 429) return "API key exceeded quota, Please try again later."
-        return "An unhandled API error occurred, If persistent, Contact the bot owner."
+        if (error.status === 503) return "The AI model is currently overloaded, please try again later."
+        if (error.status === 429) return "API key exceeded quota, please try again later."
+        return "An unhandled API error occurred, if persistent, contact the bot owner."
       }
       return "An unhandled error occurred, if persistent, contact the bot owner."
 
